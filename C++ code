@@ -1,0 +1,321 @@
+#include <iostream>
+#include<iomanip>
+#include<cmath>
+#include<cstring>
+using namespace std;
+
+void equalmatrix(double a[10][10], int c[10][10], int rw, int cl) {
+	for (int i = 0; i < rw; i++)
+	{
+		for (int j = 0; j < cl; j++)
+		{
+			c[i][j] = round(a[i][j]);
+		}
+	}
+
+}
+void addmatrix(double a[10][10], double b[10][10], double c[10][10], int rw, int cl) {
+	for (int i = 0; i < rw; i++)
+	{
+		for (int j = 0; j < cl; j++)
+		{
+			c[i][j] = a[i][j] + b[i][j];
+		}
+	}
+
+}
+void submatrix(double a[10][10], double b[10][10], double c[10][10], int rw, int cl) {
+	for (int i = 0; i < rw; i++)
+	{
+		for (int j = 0; j < cl; j++)
+		{
+			c[i][j] = a[i][j] - b[i][j];
+		}
+	}
+}
+int multmatrix(double a[10][10], double b[10][10], double c[10][10], int rw1, int cl1, int r2, int cl2) {
+	if (r2 != cl1) {
+
+		return 0;
+	}
+	else {
+		for (int i = 0; i < rw1; i++) {
+			for (int j = 0; j < cl2; j++)
+			{
+				double sum = 0;
+				for (int x = 0; x < cl1; x++)
+					sum += a[i][x] * b[x][j];
+				c[i][j] = sum;
+			}
+		}
+		return 1;
+	}
+}
+void reverse(int a[10][10], int rw, int cl) {
+	for (int i = 0; i < rw; i++)
+	{
+		for (int j = 0; j < cl; j++)
+		{
+			a[i][j] = a[j][i];
+		}
+	}
+}
+
+void printarray(int a[10][10], int r1, int c1) {
+	for (int i = 0; i < r1; i++)
+	{
+		for (int j = 0; j < c1; j++)
+		{
+			cout << a[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+void printarray(double a[10][10], int r1, int c1) {
+	for (int i = 0; i < r1; i++)
+	{
+		for (int j = 0; j < c1; j++)
+		{
+			cout << a[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+int det(double a[10][10], int n)
+{
+	int d = 0, p, h, k, i, j;
+	double temp[10][10];
+
+	if (n == 1)
+		return a[0][0];
+
+	else if (n == 2)
+	{
+		d = (a[0][0] * a[1][1] - a[0][1] * a[1][0]);
+		return d;
+	}
+	else
+	{
+		for (p = 0; p < n; p++)
+		{
+			h = 0;
+			k = 0;
+			for (i = 1; i < n; i++)
+				for (j = 0; j < n; j++)
+				{
+					if (j == p)
+						continue;
+
+					temp[h][k] = a[i][j];
+					k++;
+
+					if (k == n - 1)
+					{
+						h++;
+						k = 0;
+					}
+				}
+			d = d + a[0][p] * pow(-1, p) * det(temp, n - 1);
+		}
+		return d;
+	}
+}
+
+void cofact(double t[10][10], double c[10][10], int rowsA)
+{
+	double b[10][10];
+	int p, q, m, n, i, j;
+	for (q = 0; q < rowsA; q++)
+		for (p = 0; p < rowsA; p++)
+		{
+			m = 0;
+			n = 0;
+			for (i = 0; i < rowsA; i++)
+				for (j = 0; j < rowsA; j++)
+				{
+					b[i][j] = 0;
+					if (i != q && j != p)
+					{
+						b[m][n] = t[i][j];
+						if (n < (rowsA - 2))
+							n++;
+						else
+						{
+							n = 0;
+							m++;
+						}
+					}
+				}
+			c[q][p] = pow(-1, q + p) * det(b, rowsA - 1);
+		}
+}
+
+int INV(double a[10][10], double c[10][10], int rowsA)
+{
+	double t[10][10];
+	double determinant = det(a, rowsA);
+	if (det == 0)
+	{
+
+		return 0;
+	}
+
+	for (int j = 0; j < rowsA; j++)
+		for (int i = 0; i < rowsA; i++)
+			t[j][i] = a[i][j];
+
+	cofact(t, c, rowsA);
+
+	for (int i = 0; i < rowsA; i++)
+		for (int j = 0; j < rowsA; j++)
+			c[i][j] = c[i][j] / determinant;
+
+	return 1;
+}
+
+
+int main()
+{
+	double matA[10][10], matB[10][10];
+	int matC[10][10];
+	int rowA, colA, rowsB, colB;
+
+	cout << "Please enter dimensions of Matrix A:" << '\n';
+	cin >> rowA >> colA;
+
+	cout << "Please enter dimensions of Matrix B:" << '\n';
+	cin >> rowsB >> colB;
+
+	cout << "Please enter values of Matrix A:" << '\n';
+	for (int i = 0; i < rowA; i++)
+	{
+		for (int j = 0; j < colA; j++)
+		{
+			cin >> matA[i][j];
+		}
+	}
+
+	cout << "Please enter values of Matrix B:" << '\n';
+	for (int i = 0; i < rowsB; i++)
+	{
+		for (int j = 0; j < colB; j++)
+		{
+			cin >> matB[i][j];
+		}
+	}
+
+	for (int exit = 0; exit == 0;) {
+		cout << "Please choose operation type(1: A+B, 2: A-B, 3: AxB, 4: A*inverse(B), 5: |A|, 6: |B|, 7: quit):" << '\n';
+		int op;
+		cin >> op;
+
+
+		switch (op) {
+		case 1:
+		{
+			double res[10][10];
+			addmatrix(matA, matB, res, rowA, colA);
+			equalmatrix(res, matC, rowA, colA);
+			printarray(matC, rowA, colA);
+		}
+		break;
+
+		case 2:
+		{
+			double res[10][10];
+			submatrix(matA, matB, res, rowA, colA);
+			equalmatrix(res, matC, rowA, colA);
+			printarray(matC, rowA, colA);
+		}
+		break;
+
+		case 3:
+		{
+			double res[10][10];
+			int error = 0;
+			error = multmatrix(matA, matB, res, rowA, colA, rowsB, colB);
+			if (error != 1) {
+				cout << "The operation you chose is invalid for the given matrices." << '\n';
+				continue;
+			}
+			else {
+				equalmatrix(res, matC, rowA, colB);
+				printarray(matC, rowA, colB);
+			}
+
+		}
+		break;
+
+		case 4:
+		{
+			if (rowsB == colB) {
+				double check3 = det(matB, rowsB);
+				if (check3 == 0) {
+					cout << "The operation you chose is invalid for the given matrices." << '\n';
+					continue;
+				}
+				double invers[10][10];
+				double res[10][10];
+				int check2 = INV(matB, invers, rowsB);
+				if (check2 == 1) {
+					int check = multmatrix(matA, invers, res, rowA, colA, rowsB, colB);
+					if (check == 1) {
+						equalmatrix(res, matC, rowA, colB);
+						printarray(matC, rowA, colB);
+					}
+					else {
+						cout << "The operation you chose is invalid for the given matrices." << '\n';
+						continue;
+					}
+				}
+				else {
+					cout << "The operation you chose is invalid for the given matrices." << '\n';
+					continue;
+				}
+			}
+			else {
+				cout << "The operation you chose is invalid for the given matrices." << '\n';
+				continue;
+
+			}
+		}
+		break;
+		case 5:
+		{
+			if (rowA == colA)
+			{
+				cout << det(matA, rowA) << endl;
+			}
+			else
+			{
+				cout << "The operation you chose is invalid for the given matrices." << endl;
+				continue;
+			}
+
+		}
+		break;
+		case 6:
+		{
+			if (rowsB == colB)
+			{
+				cout << det(matB, rowsB) << endl;
+			}
+			else
+			{
+				cout << "The operation you chose is invalid for the given matrices." << endl;
+				continue;
+			}
+
+		}
+		break;
+		case 7:
+		{
+			cout << "Thank you!" << endl;
+			exit = 1;
+		}
+
+		}
+	}
+
+}
